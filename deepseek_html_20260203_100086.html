@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEBA দশম শ্ৰেণী AI শিক্ষক</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+
+<body>
+  <!-- Login Container -->
+  <div class="login-container" id="loginContainer">
+    <div class="login-box">
+      <!-- Login Form -->
+      <div id="loginFormContainer">
+        <div class="login-header">
+          <h1>🎓 SEBA AI শিক্ষক</h1>
+          <p>লগ ইন কৰক আপোনাৰ একাউণ্টলৈ</p>
+        </div>
+        
+        <div class="login-error" id="loginError"></div>
+        <div class="login-success" id="loginSuccess"></div>
+        <div class="login-info" id="loginInfo"></div>
+        
+        <form id="loginForm">
+          <input type="email" id="loginEmail" class="login-input" placeholder="ইমেইল ঠিকনা" required>
+          <input type="password" id="loginPassword" class="login-input" placeholder="পাছৱৰ্ড" required>
+          <button type="submit" class="login-btn" id="loginSubmit">
+            <i class="fas fa-sign-in-alt"></i> লগ ইন
+          </button>
+        </form>
+        
+        <div class="form-links">
+          <a class="form-link" onclick="showResetPassword()">
+            <i class="fas fa-key"></i> পাছৱৰ্ড পাহৰিলে?
+          </a>
+          <a class="form-link" onclick="showSignupForm()">
+            <i class="fas fa-user-plus"></i> নতুন একাউণ্ট খোলক
+          </a>
+        </div>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signupFormContainer" style="display: none;">
+        <div class="login-header">
+          <h1>📝 নতুন একাউণ্ট</h1>
+          <p>একাউণ্ট এটা খোলক</p>
+        </div>
+        
+        <div class="login-error" id="signupError"></div>
+        <div class="login-success" id="signupSuccess"></div>
+        
+        <form id="signupForm">
+          <input type="text" id="signupName" class="login-input" placeholder="নাম">
+          <input type="email" id="signupEmail" class="login-input" placeholder="ইমেইল ঠিকনা" required>
+          <input type="password" id="signupPassword" class="login-input" placeholder="পাছৱৰ্ড (কমেও ৬ আখৰ)" required>
+          <input type="password" id="signupConfirmPassword" class="login-input" placeholder="পাছৱৰ্ড নিশ্চিত কৰক" required>
+          <button type="submit" class="login-btn" id="signupSubmit">
+            <i class="fas fa-user-plus"></i> একাউণ্ট খোলক
+          </button>
+        </form>
+        
+        <div class="back-to-login">
+          <button class="login-toggle" onclick="showLoginForm()">
+            <i class="fas fa-arrow-left"></i> লগ ইন পৃষ্ঠালৈ ঘূৰি যাওক
+          </button>
+        </div>
+      </div>
+
+      <!-- Reset Password Form -->
+      <div id="resetPasswordFormContainer" style="display: none;">
+        <div class="login-header">
+          <h1>🔑 পাছৱৰ্ড পুনৰুদ্ধাৰ</h1>
+          <p>আপোনাৰ ইমেইলত পাছৱৰ্ড পুনৰুদ্ধাৰৰ লিংক প্ৰেৰণ কৰক</p>
+        </div>
+        
+        <div class="login-error" id="resetError"></div>
+        <div class="login-success" id="resetSuccess"></div>
+        <div class="login-info" id="resetInfo"></div>
+        
+        <form id="resetPasswordForm">
+          <input type="email" id="resetEmail" class="login-input" placeholder="আপোনাৰ ইমেইল ঠিকনা" required>
+          <button type="submit" class="login-btn secondary" id="resetSubmit">
+            <i class="fas fa-paper-plane"></i> পুনৰুদ্ধাৰৰ লিংক প্ৰেৰণ কৰক
+          </button>
+        </form>
+        
+        <div class="back-to-login">
+          <button class="login-toggle" onclick="showLoginForm()">
+            <i class="fas fa-arrow-left"></i> লগ ইন পৃষ্ঠালৈ ঘূৰি যাওক
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div class="app-container" id="appContainer">
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2>👨‍🎓 SEBA AI শিক্ষক</h2>
+          <p>দশম শ্ৰেণী (HSLC)</p>
+        </div>
+
+        <div class="user-info-section">
+          <div class="user-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="user-details">
+            <div class="user-name" id="userName">ছাত্ৰ/ছাত্ৰী</div>
+            <div class="user-email" id="userEmail">user@example.com</div>
+            <button class="logout-btn" onclick="handleLogout()">
+              <i class="fas fa-sign-out-alt"></i> লগ আউট
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar-nav">
+          <a href="#" class="nav-item active" onclick="setActive(this)">
+            <i class="fas fa-home"></i>
+            <span>মুখ্য পৃষ্ঠা</span>
+          </a>
+          <a href="#" class="nav-item" onclick="setActive(this)">
+            <i class="fas fa-book"></i>
+            <span>পাঠ্যপুথি</span>
+          </a>
+          <a href="#" class="nav-item" onclick="setActive(this)">
+            <i class="fas fa-question-circle"></i>
+            <span>অনুশীলনী</span>
+          </a>
+          <a href="#" class="nav-item" onclick="setActive(this)">
+            <i class="fas fa-chart-line"></i>
+            <span>প্ৰগতি</span>
+          </a>
+          <a href="#" class="nav-item" onclick="setActive(this)">
+            <i class="fas fa-cog"></i>
+            <span>ছেটিংছ</span>
+          </a>
+          <a href="#" class="nav-item" onclick="setActive(this)">
+            <i class="fas fa-question"></i>
+            <span>সহায়</span>
+          </a>
+        </div>
+
+        <div class="sidebar-footer">
+          <p>© 2025 Jajabor AI. All rights reserved.</p>
+          <p>Version 1.0.0</p>
+          <p style="margin-top: 5px; font-size: 0.8rem; opacity: 0.7;">
+            <i class="fas fa-database"></i> Cache Enabled
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="header">
+          <h1>📚 SEBA দশম শ্ৰেণী AI শিক্ষক</h1>
+          <p>তোমাৰ বুদ্ধিমান সহায়ক - HSLC পাঠ্যক্ৰমৰ সম্পূৰ্ণ সহায়</p>
+        </div>
+        
+        <div class="controls">
+          <select id="subject">
+            <option value="">📚 বিষয় বাছনি কৰক (ল'ডিং...)</option>
+          </select>
+
+          <select id="chapter">
+            <option value="">📖 অধ্যায় বাছনি কৰক</option>
+          </select>
+        </div>
+
+        <div class="chat-area" id="chat">
+          <div class="hover-scroll-indicator" id="hoverIndicator">
+            <i class="fas fa-hand-paper"></i> Hover to pause scrolling
+          </div>
+          <div class="welcome-msg">
+            <h3>👨‍🏫 স্বাগতম! প্রিয় ছাত্ৰ/ছাত্ৰী!</h3>
+            <p>মই তোমালোকৰ SEBA দশম শ্ৰেণীৰ AI শিক্ষক।</p>
+            <p>ওপৰত থকা বাকছৰ পৰা <strong>বিষয়</strong> আৰু <strong>অধ্যায়</strong> বাছনি কৰি পাঠ্যপুথিৰ ভিতৰৰ যিকোনো প্ৰশ্ন সোধা।</p>
+            <p>অধ্যায় বাছনি কৰিলে পাঠ্যপুথিৰ অনুশীলনীৰ প্ৰশ্নসমূহ দেখুৱাম। 📚</p>
+            
+            <!-- Simple animated version -->
+            <div class="stats-banner">
+              <p>
+                <i class="fas fa-database"></i> 
+                <span class="highlight-number">2000+</span>
+                <span>প্ৰিল'ডেড অনুশীলনী প্ৰশ্ন</span>
+                <i class="fas fa-book"></i>
+              </p>
+              <p class="stats-subtext">
+                <i class="fas fa-check-circle"></i>
+                ৬টা বিষয় • ৫০+ অধ্যায় • সকলো পাঠ্যপুথিৰ প্ৰশ্ন
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-area">
+          <input id="question" type="text" placeholder="আপোনাৰ প্ৰশ্ন ইয়াত লিখক..." />
+          <button id="send-btn" onclick="sendQuestion()"><i class="fas fa-arrow-up"></i></button>
+        </div>
+
+        <div class="footer">
+          ⚠️ সাৱধান: এই AI-এ <span>কেৱল SEBA দশম শ্ৰেণীৰ পাঠ্যক্ৰম</span>ৰ ভিতৰৰ প্ৰশ্নহে উত্তৰ দিব।
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Files -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/katex-renderer.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cache.js"></script>
+  <script src="js/subject-data.js"></script>
+  <script src="js/scroll-controls.js"></script>
+  <script src="js/ai-streaming.js"></script>
+  <script src="js/ui-controls.js"></script>
+  <script src="js/ad-manager.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
