@@ -1,7 +1,7 @@
 /* ========== SUPABASE CONFIGURATION ========== */
 const SUPABASE_CONFIG = {
   url: 'https://rddcbsmreyrxewkqnixp.supabase.co',
-  anonKey: 'sb_publishable_vNPXlACJvutoeCg59dYnbw_3zAWOtqV'
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkZGNic21yZXlyeGV3a3FuaXhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ3MDYzODksImV4cCI6MjA1MDI4MjM4OX0.Y7GmS5z0h7J8lM2zB8u7XjWqW8tK4gP3p8qM4V4w5Y8'
 };
 
 // Database Tables
